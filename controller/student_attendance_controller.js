@@ -59,7 +59,7 @@ function insertRecordatt(req, res) {
   att.march = req.body.march;
   att.april = req.body.april;
   att.may = req.body.may;
-  att.jun = req.body.june;
+  att.june = req.body.june;
   att.july = req.body.july;
   att.aug = req.body.aug;
   att.sept = req.body.sept;
@@ -98,7 +98,7 @@ function updateRecordatt(req, res) {
 }
 
 function handleValidationErroratt(err, body) {
-  for (field in err.errors) {
+  for (var field in err.errors) {
     switch (err.errors[field].path) {
       case "name":
         body["nameError"] = err.errors[field].message;
@@ -109,6 +109,10 @@ function handleValidationErroratt(err, body) {
       case "roll_no":
         body["roll_noError"] = err.errors[field].message;
         break;
+        case "student_id":
+          body["student_idError"] = err.errors[field].message;
+          break;
+      
 
       default:
         break;

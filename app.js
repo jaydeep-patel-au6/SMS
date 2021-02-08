@@ -26,7 +26,9 @@ import ticket from "./routes/ticket_route";
 import admin from "./controller/admin_controler";
 import announcement from "./model/anno_model";
 import timetable1 from "./model/timetable_model";
+import returnDesboard from "./routes/return_routes" 
 const { find } = require("./model/admin.js");
+
 var app = express();
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
@@ -72,6 +74,7 @@ app.use("/att", att);
 app.use("/admission-inq", admission);
 app.use("/ticket", ticket);
 app.use("/admin", admin);
+app.use("/return-deshboard", returnDesboard)
 
 app.use((req, res, next) => {
   var error = new Error("NOT FOUND");
@@ -88,17 +91,11 @@ app.use((error, req, res, next) => {
   });
 });
 
-// DB Config
-const db = require('./model/databaseConnection').mongoURI;
-
-// Connect to MongoDB
-mongoose
-  .connect(
-    db,
-    { useNewUrlParser: true ,useUnifiedTopology: true}
-  )
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.log(err));
+//DATABASE_CONNECTION
+mongoose.connect("mongodb+srv://hemant1234:hemant@1234@cluster0-fasyy.mongodb.net/SMS?retryWrites=true&w=majority", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 //DASHBOARD
 app.get("/", async (req, res) => {

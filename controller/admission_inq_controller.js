@@ -34,7 +34,7 @@ function insertRecord(req, res){
 
 //validation function for student inq form
 function handleValidationError(err, body) {
-    for (field in err.errors) {
+    for (var field in err.errors) {
         switch (err.errors[field].path) {
             case 'studentName':
                 body['studentNameError'] = err.errors[field].message;

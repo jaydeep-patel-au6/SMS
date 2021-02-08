@@ -1,5 +1,5 @@
 import express from "express";
-
+import auth from "../middleware/check-auth"
 
 //SCHEMA
 import stu_reg from "../model/stu_reg";
@@ -15,7 +15,7 @@ reg.get("/reg", (req, res, next) => {
   res.render("stu_reg");
 });
 
-reg.post("/reg", (req, res, next) => {
+reg.post("/reg",(req, res, next) => {
   var reg = new stu_reg({
     _id: mongoose.Types.ObjectId(),
     stud_user: req.session.signup,

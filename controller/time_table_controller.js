@@ -101,7 +101,7 @@ function updateRecordtt(req, res) {
 }
 
 function handleValidationErrortt(err, body) {
-    for (field in err.errors) {
+    for (var field in err.errors) {
         switch (err.errors[field].path) {
             case 'class':
                 body['classError'] = err.errors[field].message;
@@ -119,11 +119,11 @@ function handleValidationErrortt(err, body) {
                 body['session2Error'] = err.errors[field].message;
                 break;
             case 'teacher2':
-                body['classError'] = err.errors[field].message;
+                body['teacher2Error'] = err.errors[field].message;
                 break;
-            case 'day':
-                body['dayError'] = err.errors[field].message;
-                break;
+           
+           
+           
             default:
                 break;
         }

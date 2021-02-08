@@ -21,7 +21,9 @@ teacher.post("/signup", (req, res, nest) => {
   Teacher.find({ email: req.body.email })
     .then((result) => {
       if (result.length >= 1) {
-        console.log("EMAIL_ID ALREADY EXIST");
+        res.render('Teach_signup',{
+          title: 'Email-id alrady exist'
+        })
       } else {
         bcrypt.hash(req.body.password, 10, function (err, hash) {
           // Store hash in your password DB.
@@ -60,7 +62,8 @@ teacher.post("/login", (req, res, next) => {
   Teacher.find({ email: req.body.email })
     .then((doc) => {
       if (doc.length < 1) {
-        console.log("EMAIL_ID NOT FOUND");
+       // console.log("EMAIL_ID NOT FOUND");
+       res.render("Teach_login",{title:"EMAIL_ID NOT FOUND"})
       } else {
         bcrypt.compare(req.body.password, doc[0].password, (err, result) => {
           // result == true
@@ -69,14 +72,19 @@ teacher.post("/login", (req, res, next) => {
             req.session.teachersession_id = doc[0]._id;
             var token = jwt.sign(
               { email: doc[0].email, password: doc[0].password },
-              process.env.JWTKEY,
+              "apple",
               { expiresIn: "1h" }
             );
             //console.log(token)
+            req.session.teacher_token=token
             console.log("TEACHER SESSION_ID:-", req.session.teachersession_id);
             res.redirect("tec_dash");
 
             //res.status(200).json({message:"LOGIN",token:token})
+          }else{
+            res.render('Teach_login',{
+              title2: 'enter password or password doesnot right'
+            })
           }
         });
       }

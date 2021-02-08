@@ -22,10 +22,22 @@ class ticket{
 
 
     postTicket(req, res){
-        if (req.body._id == '')
-        insertRecordticket(req, res); // insert data function
-        else
-        updateRecordticket(req, res); // update data function
+       
+       
+        Ticket.findOneAndUpdate({ _id: req.body._id }, req.body, { new: true }, (err, doc) => {
+            if (!err) { res.redirect('/ticket'); }
+           
+                else{
+                    res.render('admin/ticket',{
+                       
+                        viewTitle3: 'ticket list List',
+                        viewTitle1: 'Only Update'
+                          
+                    })
+                    console.log('Error during ticket update : ' + err);
+                }
+        });
+       
 
     
     }
@@ -52,36 +64,5 @@ class ticket{
     
 
 }
-
-//insert ticket function
-function insertRecordticket(req, res){
-   
-    var ticket = new Ticket()
-    ticket.title = req.body.title
-    ticket.concern = req.body.consern
-    ticket.status = req.body.status
-    ticket.save((err, doc)=>{
-     if (!err)
-     res.redirect('/ticket');
-
-     
-        else
-            console.log('Error during ticket record insertion : ' + err);
-    
-    })
-}
-
-//update timetable function
-function updateRecordticket(req, res) {
-    console.log(req.body)
-    Ticket.findOneAndUpdate({ _id: req.body._id }, req.body, { new: true }, (err, doc) => {
-        if (!err) { res.redirect('/ticket'); }
-       
-            else{
-                console.log('Error during ticket update : ' + err);
-            }
-    });
-}
-
 
 module.exports = ticket

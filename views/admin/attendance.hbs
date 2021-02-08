@@ -1,3 +1,6 @@
+<br>
+<a href="/return-deshboard" ><i class="	fa fa-angle-double-left" aria-hidden="true" style="font-size:25px;color: white;padding:10px;margin:10px;border:1px solid black;background:blue">Return</i></a>
+<br><br>
 <div class="container">
    <h3>{{viewTitle1}}</h3><br><br>
 
@@ -30,7 +33,9 @@
       <div class="form-group">
          <label for="exampleInputPassword1">Student_id</label>
          <input type="text" pattern="[A-Za-z0-9]{1,}" class="form-control" id="exampleInputPassword1"
-            placeholder="Student_id" name="student_id">
+            placeholder="Student_id" name="student_id" value="{{att.student_id}}">
+              <div class="text-danger">
+     {{att.student_idError}}</div>
       </div>
 
 

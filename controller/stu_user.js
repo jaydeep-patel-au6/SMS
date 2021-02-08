@@ -8,8 +8,9 @@ import mailer from "../utils/nodemailer";
 
 require("dotenv").config();
 import passport from "passport";
-import passportLocalMongoose from "passport-local-mongoose"
-import findOrCreate from "mongoose-findorcreate"
+import passportLocalMongoose from "passport-local-mongoose";
+import findOrCreate from "mongoose-findorcreate";
+import auth from "../middleware/check-auth";
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 var student = express.Router();
 
@@ -49,7 +50,7 @@ passport.use(
         if (err) {
           return cb(err);
         } else if (!user) {
-          gauthstudent = new Student({
+          var gauthstudent = new Student({
             _id: mongoose.Types.ObjectId(),
             name: profile.displayName,
             googleId: profile.id,
@@ -130,21 +131,25 @@ student.post("/signup", (req, res, next) => {
   Student.find({ email: req.body.email })
     .then((result) => {
       if (result.length >= 1) {
-        console.log("EMAIL_ID ALREADY EXIST");
+       // res.redirect("/student/login");
+        //console.log("EMAIL_ID ALREADY EXIST");
+        res.render('Stud_signup',{
+          title: 'Email-id alrady exist'})
+
       } else {
         bcrypt.hash(req.body.password, 10, function (err, hash) {
           // Store hash in your password DB.
           if (err) {
             console.log(err);
           } else {
-            // passport.authenticate("local")(req,res,function(){res.redirect('/stu_reg/reg/')})
             var student = new Student({
               _id: mongoose.Types.ObjectId(),
               name: req.body.user_name,
               email: req.body.email,
               password: hash,
             });
-            student.save().then((data) => {
+            student.save().
+            then((data) => {
               req.session.signup = data._id;
               console.log("SIGN_UP SESSION", req.session.signup);
               console.log("SIGN_UP DATA  :-", data);
@@ -160,7 +165,8 @@ student.post("/signup", (req, res, next) => {
       res.status(400).json({
         ERROR: err,
       });
-      console.log(err);
+      console.log("SIGN_UP ERROR");
+      res.redirect("/student/login");
     });
 });
 
@@ -173,18 +179,20 @@ student.post("/login", (req, res, next) => {
   Student.find({ email: req.body.email })
     .then((doc) => {
       if (doc.length < 1) {
-        console.log("EMAIL_ID NOT FOUND");
+       
+        res.render("Stud_login",{title:"EMAIL_ID NOT FOUND"})
+        //console.log("EMAIL_ID NOT FOUND");
       } else {
         bcrypt.compare(req.body.password, doc[0].password, (err, result) => {
           // result == true
           if (result) {
             console.log("yes");
-            // var token = jwt.sign(
-            // { email: doc[0].email, password: doc[0].password },
-            // process.env.JWTKEY,
-            // { expiresIn: "1h" }
-            // );
-            // console.log("Login token (stuent) :- ", token);
+            var token = jwt.sign(
+              { email: doc[0].email, password: doc[0].password },
+              "apple",
+              { expiresIn: "1h" }
+            );
+            console.log("Login token (stuent) :- ", token);
             console.log("LOGIN ID (STUDENT)  :-", doc[0]._id);
             req.session.user_id = doc[0]._id;
 
@@ -192,17 +200,20 @@ student.post("/login", (req, res, next) => {
               "STUDENT SESSION_ID :-",
               (req.session.user_id = doc[0]._id)
             );
-            //req.session.token=token
+            req.session.token1 = token;
             res.redirect("/dshbrd/");
+            
 
             //res.redirect(`/dshbrd?_id=${doc[0]._id}`)
             //res.render('stu_dash',{name:doc.name})
           }
+          res.render("Stud_login",{title2:" WRONG PASSWORD"})
         });
       }
     })
     .catch((err) => {
-      console.log(err);
+      //console.log("login error", err);
+      res.redirect("/student/login");
     });
 });
 

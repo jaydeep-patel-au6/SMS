@@ -89,27 +89,20 @@ function insertRecordAnno(req, res){
 
 //update announcement function
  function updateRecordAnno(req, res) {
- Anno.updateOne({ _id: req.body._id },{ title: req.body.title,note:req.body.note}).then ((data)=>
- {
-     console.log(data)
-     return res.redirect('/anno');
 
- })
- .catch((err) => {console.log(err)})
-
-
-    // { new: true}, (err, doc) => {
-    //     if (!err) { res.redirect('/anno'); }
+    Anno.findOneAndUpdate({ _id: req.body._id }, req.body, { new: true }, (err, doc) => {
+        if (!err) { res.redirect('/anno'); }
        
-    //         else{
-    //             console.log('Error during record update : ' + err);
-    //         }
-    //});
+            else{
+                console.log('Error during timetable update : ' + err);
+            }
+    });
+
  }
 
 //validation for announcement
 function handleValidationErrorAnno(err, body) {
-    for (field in err.errors) {
+    for (var field in err.errors) {
         switch (err.errors[field].path) {
             case 'title':
                 body['titleError'] = err.errors[field].message;

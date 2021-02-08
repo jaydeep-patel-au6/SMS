@@ -6,6 +6,7 @@ import Ticket from "../model/ticket";
 import student_login from "../model/student.js";
 import tec_exam from "../model/tec_exam";
 import tec_test from "../model/tec_test";
+import auth from "../middleware/check-auth"
 import teacher_model from "../model/teacher";
 
 //ROUTE
@@ -13,7 +14,7 @@ var teacher = express.Router();
 teacher.use(express.static("public"));
 
 //TEACHER DASHBOARD
-teacher.get("/", async (req, res, next) => {
+teacher.get("/",async (req, res, next) => {
   console.log("Teacher deshboard data   :-", req.session.teachersession_id);
   // var teacher_data = await teacher_model.find({_id: req.session.teachersession_id });
   //console.log("Teacher deshboard data   :-",teacher_data)

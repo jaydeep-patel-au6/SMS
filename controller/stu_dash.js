@@ -6,6 +6,7 @@ import stud_User from "../model/student";
 import Ticket from "../model/ticket";
 import student_test1 from "../model/tec_test";
 import student_exam1 from "../model/tec_exam"
+import auth from "../middleware/check-auth"
 import att_data123 from "../model/student_attendance_model"
 
 //STUDENT DASHBOARD ROUTE
@@ -13,7 +14,7 @@ var dash = express.Router();
 dash.use(express.static("public"));
 
 //STUDENT_DASHBOARD ROUTE
-dash.get("/", async (req, res, next) => {
+dash.get("/",auth.usersession,async (req, res, next) => {
   try {
     console.log(req.session.user_id);
 
@@ -50,7 +51,7 @@ dash.get("/", async (req, res, next) => {
 });
 
 //STUDENT_DASHBOARD EDIT
-dash.get("/edit/:id", async (req, res, next) => {
+dash.get("/edit/:id", auth.usersession,async (req, res, next) => {
   var id = req.params.id;
   const data = await stu_Reg.findOne({ stud_user: id });
   console.log("dash data", data);
@@ -84,7 +85,7 @@ dash.get("/edit/:id", async (req, res, next) => {
 
 //UPDATING DATA USING  PATCH METHOD
 
-dash.patch("/update", (req, res, next) => {
+dash.patch("/update",auth.usersession, (req, res, next) => {
   stu_Reg
     .updateOne(
       { stud_user: req.session.user_id },
@@ -109,7 +110,7 @@ dash.patch("/update", (req, res, next) => {
 });
 
 //STUDENT_DASHBOARD TICKET SECTION
-dash.post("/", (req, res, next) => {
+dash.post("/",auth.usersession, (req, res, next) => {
   var ticket = new Ticket({
     _id: mongoose.Types.ObjectId(),
     title: req.body.title,
@@ -123,7 +124,7 @@ dash.post("/", (req, res, next) => {
 });
 
 //DELETE TICKET STATUS
-dash.delete("/:id", (req, res, next) => {
+dash.delete("/:id",auth.usersession, (req, res, next) => {
   console.log(req.params.id);
   Ticket.remove({ _id: req.params.id }).then((data) => {
     console.log("Deleted data :-", data);
